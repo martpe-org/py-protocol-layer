@@ -57,7 +57,7 @@ class DevelopmentConfig(Config):
     MONGO_DATABASE_PORT = 27017
     MONGO_DATABASE_NAME = "martpe"
     MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb+srv://martpedev:tZmk72uOtHgi1XpX@martpe-dev.3trlmki.mongodb.net/?retryWrites=true&w=majority")
-    CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT", "https://h72406bj-3001.inc1.devtunnels.ms/api/v1/user/response")
+    CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT", "https://localhost:3001/api/v1/user/response")
 
 
 class TestingConfig(Config):
