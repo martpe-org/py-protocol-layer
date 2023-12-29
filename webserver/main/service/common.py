@@ -47,9 +47,9 @@ def get_bpp_response_for_message_id(**kwargs):
         if bpp_response['count'] > 0:
             return bpp_response['data']
         else:
-            return {"error": DatabaseError.NOT_FOUND_ERROR.value}
+            return [{"error": DatabaseError.NOT_FOUND_ERROR.value}]
     else:
-        return {"error": DatabaseError.ON_READ_ERROR.value}
+        return [{"error": DatabaseError.ON_READ_ERROR.value}]
 
 
 def bpp_post_call(request_type, request_payload):
