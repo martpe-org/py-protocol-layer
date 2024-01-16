@@ -192,6 +192,9 @@ class Type2(Enum):
     Delivery = 'Delivery'
     Delivery_and_Self_Pickup = 'Delivery and Self-Pickup'
     Reverse_QC = 'Reverse QC'
+    Cancel = 'Cancel'
+    Return = 'Return'
+    RTO = 'RTO'
 
 
 class Gps(BaseModel):
@@ -701,6 +704,7 @@ class IssueSubCategory(Enum):
     ITM02 = 'ITM02'
     ITM03 = 'ITM03'
     ITM04 = 'ITM04'
+    ITM05 = 'ITM05'
     FLM01 = 'FLM01'
     FLM02 = 'FLM02'
     FLM03 = 'FLM03'
@@ -708,6 +712,7 @@ class IssueSubCategory(Enum):
     FLM05 = 'FLM05'
     FLM06 = 'FLM06'
     FLM07 = 'FLM07'
+    FLM08 = 'FLM08'
     AGT01 = 'AGT01'
     AGT02 = 'AGT02'
     PMT01 = 'PMT01'
@@ -1451,7 +1456,7 @@ class Cancellation(BaseModel):
 
 
 class Category(BaseModel):
-    id: str = Field(None, description='Unique id of the category')
+    id: str
     parent_category_id: Optional[IdModel] = None
     descriptor: Optional[Descriptor] = None
     time: Optional[Time] = None
@@ -1531,7 +1536,7 @@ class Order(BaseModel):
     offers: Optional[List[Offer1]] = None
     documents: Optional[List[Document]] = None
     billing: Optional[Billing] = None
-    fulfillments: Optional[List[dict]] = None
+    fulfillments: Optional[List[Fulfillment]] = None
     quote: Optional[Quotation] = None
     payment: Optional[Payment] = None
     created_at: Optional[datetime] = None
