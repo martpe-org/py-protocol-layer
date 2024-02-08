@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from json import JSONDecodeError
 from typing import List, Tuple
 import re
 
@@ -18,6 +19,7 @@ from main.repository.mongo import collection_find_one
 from main.utils.decorators import check_for_exception
 from main.utils.lookup_utils import fetch_subscriber_url_from_lookup
 from main.utils.cryptic_utils import create_authorisation_header
+from main.utils.math_utils import create_simple_circle_polygon
 from main.utils.webhook_utils import post_on_bg_or_bpp, MeasureTime
 
 
@@ -247,7 +249,7 @@ def transform_item_into_product_variant_group(org_id, local_id, variants, item):
 
 
 def transform_item_into_custom_menu(org_id, local_id, custom_menu, item):
-    return CustomMenu(**{"local_id": local_id, "parent_category_id": custom_menu["parent_category_id"],
+    return CustomMenu(**{"local_id": local_id, "parent_category_id": custom_menu.get("parent_category_id"),
                          "descriptor": custom_menu["descriptor"], "tags": custom_menu["tags"],
                          "id": f"{org_id}_{local_id}", "category": item["item_details"]["category_id"],
                          "domain": item["context"]["domain"], "provider": org_id,
@@ -330,15 +332,69 @@ def update_item_customisation_group_ids_with_children(existing_ids, items, all_i
     return new_ids
 
 
+def update_location_with_serviceability(location, serviceabilities):
+    if len(serviceabilities) > 0:
+        serviceability = serviceabilities[0]
+        try:
+            location_type = "pan" if serviceability["type"] in ["11", "12"] else "polygon"
+            location.__setattr__("type", location_type)
+
+            if serviceability["unit"] == "polygon":
+                val = json.loads(serviceability["val"])
+                coordinates = val["features"][0]["geometry"]["coordinates"]
+            elif serviceability["unit"] == "geojson":
+                val = json.loads(serviceability["val"])
+                multi_coordinates = val["features"][0]["geometry"]["coordinates"]
+                coordinates = [x for xs in multi_coordinates for x in xs]
+            elif serviceability["unit"] == "coordinates":
+                val = json.loads(serviceability["val"])
+                coordinates = [[[v['lat'], v['lng']] for v in val]]
+            elif serviceability["unit"] == "km":
+                coordinates = [create_simple_circle_polygon(location.gps[0], location.gps[1], float(serviceability["val"]))]
+            else:
+                return location
+
+            location.__setattr__("polygons", {
+                "type": "Polygon",
+                "coordinates": coordinates
+            })
+        except JSONDecodeError:
+            raise Exception("Serviceability JSON string parsing error")
+
+    return location
+
+
 def add_product_with_attributes(items, db_insert=True):
     products, final_attrs, final_attr_values = [], [], []
     providers, locations, final_variant_groups, final_custom_menus, final_customisation_groups = [], [], [], [], []
+    serviceabilities = dict()
     item_cg_ids = []
     for i in items:
         attributes, variants, variant_group_local_id = [], [], None
         item_details = i["item_details"]
         tags = item_details["tags"]
         variant_groups, custom_menus, customisation_groups = transform_item_categories(i)
+
+        provider_details = i["provider_details"]
+        for t in provider_details["tags"]:
+            if t["code"] == "serviceability":
+                values = t["list"]
+                serviceability = {}
+                for v in values:
+                    if v["code"] == "location":
+                        serviceability["location"] = v["value"]
+                    elif v["code"] == "type":
+                        serviceability["type"] = v["value"]
+                    elif v["code"] == "unit":
+                        serviceability["unit"] = v["value"]
+                    elif v["code"] == "val":
+                        serviceability["val"] = v["value"]
+
+                location_local_id = serviceability["location"]
+                if location_local_id not in serviceabilities:
+                    serviceabilities[location_local_id] = [serviceability]
+                # else:
+                #     serviceabilities[location_local_id].append(serviceability)
 
         attr_codes = []
         for t in tags:
@@ -407,6 +463,7 @@ def add_product_with_attributes(items, db_insert=True):
                                    "time": i['location_details'].get('time'),
                                    "timestamp": i["context"]["timestamp"],
                                    })
+            location = update_location_with_serviceability(location, serviceabilities.get(i['location_details']['local_id'], []))
             locations.append(location)
 
         products.append(p)
@@ -419,6 +476,8 @@ def add_product_with_attributes(items, db_insert=True):
         final_customisation_groups = list({group.id: group for group in final_customisation_groups}.values())
 
     providers = list({group.id: group for group in providers}.values())
+    locations = list({l.id: l for l in locations}.values())
+    final_custom_menus = list({l.id: l for l in final_custom_menus}.values())
     if db_insert:
         upsert_product_attributes(final_attrs)
         upsert_product_attribute_values(final_attr_values)
@@ -857,19 +916,21 @@ def get_locations(**kwargs):
     mongo_collection = get_mongo_collection("location")
     lat = kwargs.pop("latitude", None)
     long = kwargs.pop("longitude", None)
-    radius = kwargs.pop("radius", 10)
     query_object = {k: v for k, v in kwargs.items() if v is not None}
     if lat and long:
         query_object.update(
-            {"gps":
-                 {"$near":
-                      {"$geometry": {"type": "Point", "coordinates": [lat, long]},
-                       "$maxDistance": radius*1000
+            {"$or": [
+                {"polygons":
+                     {"$geoIntersects":
+                          {"$geometry": {"type": "Point", "coordinates": [lat, long]}}
                       }
-                 }
+                 },
+                {"type": "pan"}]
             }
         )
     providers = mongo.collection_find_all(mongo_collection, query_object, geo_spatial=True)
+    for p in providers["data"]:
+        p.pop("polygons")
     return providers
 
 

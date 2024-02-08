@@ -27,9 +27,9 @@ def init_database():
     if mongo_client is not None and mongo_db is not None:
         return
     database_host = get_config_by_name('MONGO_DATABASE_HOST')
+    database_url = get_config_by_name('MONGO_DATABASE_URL')
     database_port = get_config_by_name('MONGO_DATABASE_PORT')
     database_name = get_config_by_name('MONGO_DATABASE_NAME')
-    database_url  = get_config_by_name('MONGO_DATABASE_URL')
     if database_url:
         mongo_client = MongoClient(database_url, maxPoolSize=10)
         log(f"Connection to the provided mongodb url is successful!")
