@@ -37,7 +37,7 @@ class Config:
     BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID", "8f4a1256-79d5-4612-a0df-e9abe0192c17")
     REGISTRY_BASE_URL = "https://staging.registry.ondc.org"
     TTL_IN_SECONDS = int(os.getenv("TTL_IN_SECONDS", "18000"))
-    VERIFICATION_ENABLE = os.getenv("VERIFICATION_ENABLE", "True") == "True"
+    VERIFICATION_ENABLE = os.getenv("VERIFICATION_ENABLE", "False") == "True"
     RABBITMQ_QUEUE_NAME = os.getenv("RABBITMQ_QUEUE_NAME", "bpp_protocol")
     RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
     QUEUE_ENABLE = os.getenv("QUEUE_ENABLE", "False") == "True"
