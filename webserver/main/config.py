@@ -44,8 +44,9 @@ class Config:
     API_TOKEN = os.getenv("API_TOKEN", "testing_random_123")
     MAX_CONSUME_MESSAGE_TIME = int(os.getenv("MAX_CONSUME_MESSAGE_TIME", "30"))
     CONSUMER_MAX_WORKERS = int(os.getenv("CONSUMER_MAX_WORKERS", "100"))
-    # MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb://localhost:27017")
-    MONGO_DATABASE_URL = "mongodb://mongo1:27017,mongo2:27018/?replicaSet=my-replica-set&readPreference=secondary"
+    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb://localhost:27017")
+    # MONGO_DATABASE_URL = "mongodb://mongo1:27017,mongo2:27018/?replicaSet=my-replica-set&readPreference=secondary"
+    IS_TEST = os.getenv("IS_TEST", "False") == "True"
 
 
 class DevelopmentConfig(Config):
@@ -132,8 +133,13 @@ def get_email_config_value_for_name(config_name):
 
 
 if __name__ == '__main__':
+
+    os.environ["ENV"] = "dev"
+    print(get_config_by_name("DOMAIN"))
+
     # os.environ["ENV"] = "light"
     # print(get_config_by_name("DOMAIN"))
 
-    os.environ["ENV"] = "dev"
+
+#     os.environ["ENV"] = "dev"
     print(get_email_config_value_for_name("from_email"))
