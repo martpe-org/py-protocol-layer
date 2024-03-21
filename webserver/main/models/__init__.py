@@ -26,11 +26,18 @@ def init_database():
     global mongo_client, mongo_db
     if mongo_client is not None and mongo_db is not None:
         return
+    database_host = get_config_by_name('MONGO_DATABASE_HOST')
     database_url = get_config_by_name('MONGO_DATABASE_URL')
+    database_port = get_config_by_name('MONGO_DATABASE_PORT')
     database_name = get_config_by_name('MONGO_DATABASE_NAME')
-    mongo_client = MongoClient(database_url)
+    if database_url:
+        mongo_client = MongoClient(database_url, maxPoolSize=10)
+        log(f"Connection to the provided mongodb url is successful!")
+    else:
+        log(f"Connection to mongodb://{database_host}:{database_port} is successful!")
+        mongo_client = MongoClient(database_host, database_port, maxPoolSize=10)
     mongo_db = mongo_client[database_name]
-    log(f"Connection string to database is {database_url}!")
+    
     create_all_indexes()
     log(f"Created indexes if not already present!")
 

@@ -36,7 +36,7 @@ def validate_payload_schema_using_pydantic_classes(request_payload, request_type
     try:
         request_type_to_class_mapping[request_type](**request_payload)
         return None
-    except pydantic.ValidationError as e:
+    except Exception | pydantic.ValidationError as e:
         error_message = str(e)
         context = json.loads(request.data)[constant.CONTEXT]
         log(e)

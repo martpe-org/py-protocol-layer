@@ -52,8 +52,9 @@ def post_count_response_to_client(route, schema_version, payload):
         client_webhook_endpoint = client_webhook_endpoint.replace(
             "clientApi", "issueApi")
     try:
-        status_code = requests_post_with_retries(
-            f"{client_webhook_endpoint}/{version}/{route}", payload=payload)
+        client_url = f"{client_webhook_endpoint}/{version}/{route}"
+        print(f'REVANTH: --> Posting to client_url: {client_url}')
+        status_code = requests_post_with_retries(client_url , payload=payload)
     except requests.exceptions.HTTPError:
         status_code = 400
     except requests.exceptions.ConnectionError:

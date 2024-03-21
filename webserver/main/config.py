@@ -31,13 +31,13 @@ class Config:
     COUNTRY_CODE = "IND"
     BAP_TTL = "20"
     BECKN_SECURITY_ENABLED = False
-    BAP_PRIVATE_KEY = os.getenv("BAP_PRIVATE_KEY", "some-key")
-    BAP_PUBLIC_KEY = os.getenv("BAP_PUBLIC_KEY", "some-key")
-    BAP_ID = os.getenv("BAP_ID", "buyer-app.ondc.org")
-    BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID", "207")
-    REGISTRY_BASE_URL = os.getenv("REGISTRY_BASE_URL", "https://preprod.registry.ondc.org/ondc")
+    BAP_PRIVATE_KEY = os.getenv("BAP_PRIVATE_KEY", "uPay8UG3c16pRRQe9fewf95QiP6/YpqoOzwRSvuWEdUZDZnLGjHStxaM+VEkwh0R0eouCL0dRZby5EWVYBMBNQ==")
+    BAP_PUBLIC_KEY = os.getenv("BAP_PUBLIC_KEY", "GQ2Zyxox0rcWjPlRJMIdEdHqLgi9HUWW8uRFlWATATU=")
+    BAP_ID = os.getenv("BAP_ID", "bap-qa.martpe.in")
+    BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID", "8f4a1256-79d5-4612-a0df-e9abe0192c17")
+    REGISTRY_BASE_URL = "https://staging.registry.ondc.org"
     TTL_IN_SECONDS = int(os.getenv("TTL_IN_SECONDS", "18000"))
-    VERIFICATION_ENABLE = os.getenv("VERIFICATION_ENABLE", "True") == "True"
+    VERIFICATION_ENABLE = os.getenv("VERIFICATION_ENABLE", "False") == "True"
     RABBITMQ_QUEUE_NAME = os.getenv("RABBITMQ_QUEUE_NAME", "bpp_protocol")
     RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
     QUEUE_ENABLE = os.getenv("QUEUE_ENABLE", "False") == "True"
@@ -58,8 +58,9 @@ class DevelopmentConfig(Config):
     BAP_URL = os.getenv("BAP_URL", "http://localhost:9900/protocol/v1")
     MONGO_DATABASE_HOST = "localhost"
     MONGO_DATABASE_PORT = 27017
-    MONGO_DATABASE_NAME = "sandbox_bap"
-    CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT", "https://616e-2409-4042-4d8d-a7b7-c127-cb03-c9c2-ecae.in.ngrok.io/clientApis/response")
+    MONGO_DATABASE_NAME = "martpe"
+    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb+srv://martpedev:tZmk72uOtHgi1XpX@martpe-dev.3trlmki.mongodb.net/?retryWrites=true&w=majority")
+    CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT", "http://localhost:3001/api/v1/user/response")
 
 
 class TestingConfig(Config):
@@ -132,8 +133,13 @@ def get_email_config_value_for_name(config_name):
 
 
 if __name__ == '__main__':
+
     os.environ["ENV"] = "dev"
     print(get_config_by_name("DOMAIN"))
 
-    os.environ["ENV"] = "prod"
+    # os.environ["ENV"] = "light"
+    # print(get_config_by_name("DOMAIN"))
+
+
+#     os.environ["ENV"] = "dev"
     print(get_email_config_value_for_name("from_email"))
