@@ -15,8 +15,8 @@ from main.routes.ondc_network import ondc_network_namespace
 from main.routes.client import client_namespace
 from main.routes.ondc_network_test import ondc_network_test_namespace
 from main.routes.response import response_namespace
+from main.routes.root import root_namespace
 from main.utils.schema_utils import transform_json_schema_error
-
 
 class Api(BaseAPI):
     def _register_doc(self, app_or_blueprint):
@@ -59,6 +59,8 @@ def bad_request(error):
 def bad_request(error):
     return {'error': str(error), 'message': error.message}, 400
 
+
+api.add_namespace(root_namespace, path='/protocol')
 
 api.add_namespace(ondc_network_namespace, path='/protocol')
 api.add_namespace(client_namespace, path='/protocol')
