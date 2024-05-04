@@ -89,23 +89,23 @@ class ProductionConfig(Config):
 
 
 class PreProductionConfig(Config):
-    DEBUG = False
+    DEBUG = True
     # uncomment the line below to use postgres
     # SQLALCHEMY_DATABASE_URI = postgres_local_base
     JWT_COOKIE_CSRF_PROTECT = False
     MMI_CLIENT_ID = os.getenv("MMI_CLIENT_ID")
     MMI_CLIENT_SECRET = os.getenv("MMI_CLIENT_SECRET")
     MMI_ADVANCE_API_KEY = os.getenv("MMI_ADVANCE_API_KEY")
-    BAP_URL = os.getenv("BAP_URL", "http://localhost:9002/protocol/v1")
-    MONGO_DATABASE_HOST = os.getenv("MONGO_DATABASE_HOST", "mongo")
-    MONGO_DATABASE_PORT = int(os.getenv("MONGO_DATABASE_PORT", 27017))
-    MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME", "sandbox_bap")
-    CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT", "http://localhost:3001/clientApis/response")
+    BAP_URL = os.getenv("BAP_URL", "http://localhost:9900/protocol/v1")
+    MONGO_DATABASE_HOST = "localhost"
+    MONGO_DATABASE_PORT = 27017
+    MONGO_DATABASE_NAME = "martpe"
+    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb+srv://root:32gkcVhKw8Sb9dJ4@cluster0.uilwfd4.mongodb.net/?retryWrites=true&w=majority")
     REGISTRY_BASE_URL = "https://preprod.registry.ondc.org/ondc"
-    BAP_PRIVATE_KEY = os.getenv("BAP_PRIVATE_KEY", "some_key")
-    BAP_PUBLIC_KEY = os.getenv("BAP_PUBLIC_KEY", "some_key")
-    BAP_ID = os.getenv("BAP_ID", "buyer-app-preprod.ondc.org")
-    BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID", "96c81878-f327-457e-8835-5b35bb20f099")
+    BAP_PRIVATE_KEY = os.getenv("BAP_PRIVATE_KEY", "ATE0AhvDhx5tWqPXXM7rGtBteeu9tFrlvt/9Ni4EX5kF64wBfVnxWjrbAh322MAQOYAvCLwn8YxRetGUbxPYiw==")
+    BAP_PUBLIC_KEY = os.getenv("BAP_PUBLIC_KEY", "BeuMAX1Z8Vo62wId9tjAEDmALwi8J/GMUXrRlG8T2Is=")
+    BAP_ID = os.getenv("BAP_ID", "bap-preprod.martpe.in")
+    BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID", "9f5fa9ce-6947-4aa5-951d-ed2cbe207581")
 
 
 config_by_name = dict(

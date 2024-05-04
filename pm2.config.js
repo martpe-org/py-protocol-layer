@@ -11,6 +11,9 @@ module.exports = {
     env_development: {
        ENV: "dev"
     },
+    env_preprod: {
+       ENV: "pre_prod"
+    }
     // exec_mode : "cluster"
   }]
 }
