@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
 
-from pydantic import AnyUrl, BaseModel, EmailStr, Field, confloat, conint, constr, StrictStr
+from pydantic import AnyUrl, BaseModel, EmailStr, Field, confloat, conint, constr, StrictStr, validator
 
 
 class Status(Enum):
@@ -110,6 +110,14 @@ class DecimalValue(BaseModel):
     __root__: Union[constr(regex=r'[+-]?([0-9]*[.])?[0-9]+'), float] = Field(
         ..., description='Describes a decimal value'
     )
+
+    @validator("__root__")
+    def check_decimal_points(cls, value):
+        decimal_str = str(value).split(".")[1]
+        if len(decimal_str) > 2:
+            raise ValueError("Decimal value should have up to two decimal points")
+        return value
+
 
 
 class Document(BaseModel):
@@ -512,11 +520,11 @@ class Range(BaseModel):
 
 class Scalar(BaseModel):
     type: Optional[Type4] = None
-    value: str
+    value: StrictStr
     estimated_value: Optional[float] = None
     computed_value: Optional[float] = None
     range: Optional[Range] = None
-    unit: str
+    unit: StrictStr
 
 
 class Schedule(BaseModel):
@@ -553,12 +561,12 @@ class Tags(BaseModel):
 
 
 class TagChild(BaseModel):
-    code: str
-    value: str
+    code: StrictStr
+    value: StrictStr
 
 
 class Tag(BaseModel):
-    code: str
+    code: StrictStr
     list: List[TagChild]
 
 
@@ -1033,6 +1041,10 @@ class FeedbackFormElement(BaseModel):
     answer_type: Optional[AnswerType] = Field(
         None, description='Specifies how the answer option should be rendered.'
     )
+
+
+class Unitized(BaseModel):
+    measure: Optional[Scalar] = None
 
 
 class Allocated(BaseModel):
@@ -1589,7 +1601,7 @@ class OnSearchProvider(BaseModel):
     payments: Optional[List[Payment]] = None
     locations: Optional[List[Location2]] = Field(None, description='Location List', min_items=1)
     offers: Optional[List[Offer]] = None
-    items: Optional[List[OnSearchItem]] = Field(None, description='Item List', max_items=500, min_items=1)
+    items: Optional[List[OnSearchItem]] = Field(None, description='Item List', max_items=1000, min_items=1)
     exp: Optional[datetime] = Field(
         None, description='Time after which catalog has to be refreshed'
     )
