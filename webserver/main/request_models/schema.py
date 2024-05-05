@@ -111,6 +111,14 @@ class DecimalValue(BaseModel):
         ..., description='Describes a decimal value'
     )
 
+    @validator("__root__")
+    def check_decimal_points(cls, value):
+        splits = str(value).split(".")
+        if len(splits) > 1 and len(splits[1]) > 2:
+            raise ValueError("Decimal value should have up to two decimal points")
+        return value
+
+
 
 class Document(BaseModel):
     url: Optional[AnyUrl] = None
@@ -556,6 +564,16 @@ class TagChild(BaseModel):
     code: str
     value: str
 
+    @validator("value")
+    def check_color_format(cls, value, values):
+        if values.get("code") == "colour" and not value.startswith("#"):
+            raise ValueError("Colour value should start with '#'")
+        if values.get("code") == "colour" and len(value) != 7:
+            raise ValueError("Colour value should contain exactly six alphanumeric characters after '#'")
+        if values.get("code") == "colour" and not value[1:].isalnum():
+            raise ValueError("Colour value should contain only alphanumeric characters after '#'")
+        return value
+
 
 class Tag(BaseModel):
     code: str
@@ -937,6 +955,12 @@ class SelectedReason(BaseModel):
 class Circle(BaseModel):
     gps: Gps
     radius: Scalar
+
+    @validator("radius")
+    def check_radius_format(cls, radius: Scalar):
+        if radius.unit == "km" and float(radius.value) > 50:
+            raise ValueError("Radius cannot be more than 50 km!")
+        return radius
 
 
 class Contact(BaseModel):
@@ -1533,7 +1557,7 @@ class Operator(Person):
 
 
 class Order(BaseModel):
-    id: Optional[StrictStr] = Field(
+    id: StrictStr = Field(
         None,
         description='Hash of order object without id<br> Will be created by buyer app in confirm API',
     )
@@ -1581,7 +1605,7 @@ class Provider(BaseModel):
 class OnSearchProvider(BaseModel):
     id: StrictStr = Field(..., description='Id of the provider')
     descriptor: Optional[Descriptor] = None
-    category_id: Optional[str] = Field(None, description='Category Id of the provider')
+    category_id: str = Field(None, description='Category Id of the provider')
     rating: Optional[ValueModel] = None
     time: Optional[Time] = None
     categories: Optional[List[Category]] = None
