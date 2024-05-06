@@ -191,4 +191,4 @@ terraform.rc
 *venv
 *.swp
 
-./webserver/data/*
+/webserver/data/*
