@@ -192,3 +192,4 @@ terraform.rc
 *.swp
 
 /webserver/data/*
+/webserver/envs/.env
