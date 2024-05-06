@@ -1,7 +1,10 @@
 import os
 
 from dotenv import load_dotenv
-load_dotenv(dotenv_path='./envs/.env')
+base_dir = os.path.abspath(os.path.dirname(__file__))
+env_path = os.path.join(base_dir, 'envs', '.env')
+print(f'loading env variables from the path: {env_path}')
+load_dotenv(dotenv_path=env_path)
 
 from apscheduler.triggers.cron import CronTrigger
 from flask_apscheduler import APScheduler
