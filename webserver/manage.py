@@ -1,5 +1,8 @@
 import os
 
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='./envs/.env')
+
 from apscheduler.triggers.cron import CronTrigger
 from flask_apscheduler import APScheduler
 

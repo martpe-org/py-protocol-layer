@@ -27,9 +27,9 @@ def init_database():
     if mongo_client is not None and mongo_db is not None:
         return
     database_host = get_config_by_name('MONGO_DATABASE_HOST')
-    database_url = get_config_by_name('MONGO_DATABASE_URL')
     database_port = get_config_by_name('MONGO_DATABASE_PORT')
     database_name = get_config_by_name('MONGO_DATABASE_NAME')
+    database_url  = get_config_by_name('MONGO_DATABASE_URL')
     if database_url:
         mongo_client = MongoClient(database_url, maxPoolSize=10)
         log(f"Connection to the provided mongodb url is successful!")
@@ -48,10 +48,10 @@ def create_all_indexes():
     [create_ttl_index(c, ttl_in_seconds=24*60*60) for c in ["on_search_dump", "request_dump", "on_search_items",
                                                             "provider", "custom_menu", "location", "product",
                                                             "product_attribute", "product_attribute_value",
-                                                            "variant_group", "customisation_group", "location_offer",
-                                                            "auth_failure_request_dump", "sub_category"
+                                                            "variant_group", "customisation_group"
                                                             ]]
     get_mongo_collection("on_search_items").create_index([('id', TEXT)], name='id_index')
+    get_mongo_collection("location").create_index([("gps", GEOSPHERE)])
 
 
 def create_ttl_index(collection_name, ttl_in_seconds=None):

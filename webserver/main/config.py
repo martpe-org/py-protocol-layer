@@ -60,8 +60,8 @@ class DevelopmentConfig(Config):
     BAP_URL = os.getenv("BAP_URL", "http://localhost:9900/protocol/v1")
     MONGO_DATABASE_HOST = "localhost"
     MONGO_DATABASE_PORT = 27017
-    MONGO_DATABASE_NAME = "martpe"
-    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb+srv://martpedev:tZmk72uOtHgi1XpX@martpe-dev.3trlmki.mongodb.net/?retryWrites=true&w=majority")
+    MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME", "martpe")
+    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL")
     CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT", "http://localhost:3001/api/v1/user/response")
 
 
@@ -101,13 +101,13 @@ class PreProductionConfig(Config):
     BAP_URL = os.getenv("BAP_URL", "http://localhost:9900/protocol/v1")
     MONGO_DATABASE_HOST = "localhost"
     MONGO_DATABASE_PORT = 27017
-    MONGO_DATABASE_NAME = "martpe"
-    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb+srv://root:32gkcVhKw8Sb9dJ4@cluster0.uilwfd4.mongodb.net/?retryWrites=true&w=majority")
+    MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME", "martpe")
+    MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL")
     REGISTRY_BASE_URL = "https://preprod.registry.ondc.org/ondc"
-    BAP_PRIVATE_KEY = os.getenv("BAP_PRIVATE_KEY", "ATE0AhvDhx5tWqPXXM7rGtBteeu9tFrlvt/9Ni4EX5kF64wBfVnxWjrbAh322MAQOYAvCLwn8YxRetGUbxPYiw==")
-    BAP_PUBLIC_KEY = os.getenv("BAP_PUBLIC_KEY", "BeuMAX1Z8Vo62wId9tjAEDmALwi8J/GMUXrRlG8T2Is=")
+    BAP_PRIVATE_KEY = os.getenv("BAP_PRIVATE_KEY")
+    BAP_PUBLIC_KEY = os.getenv("BAP_PUBLIC_KEY")
     BAP_ID = os.getenv("BAP_ID", "bap-preprod.martpe.in")
-    BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID", "9f5fa9ce-6947-4aa5-951d-ed2cbe207581")
+    BAP_UNIQUE_KEY_ID = os.getenv("BAP_UNIQUE_KEY_ID")
 
 
 config_by_name = dict(

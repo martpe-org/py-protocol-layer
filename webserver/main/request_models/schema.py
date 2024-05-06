@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 from uuid import UUID
 
-from pydantic import AnyUrl, BaseModel, EmailStr, Field, confloat, conint, constr, StrictStr
+from pydantic import AnyUrl, BaseModel, EmailStr, Field, confloat, conint, constr, StrictStr, validator
 
 
 class Status(Enum):

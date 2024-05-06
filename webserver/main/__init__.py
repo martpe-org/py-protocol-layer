@@ -1,6 +1,6 @@
 
 
-import main.config
+import main.config as config
 
 
 def create_app(config_name):
