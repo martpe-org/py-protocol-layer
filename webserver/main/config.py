@@ -99,6 +99,7 @@ class PreProductionConfig(Config):
     MMI_CLIENT_SECRET = os.getenv("MMI_CLIENT_SECRET")
     MMI_ADVANCE_API_KEY = os.getenv("MMI_ADVANCE_API_KEY")
     BAP_URL = os.getenv("BAP_URL", "http://localhost:9900/protocol/v1")
+    CLIENT_WEBHOOK_ENDPOINT = os.getenv("CLIENT_WEBHOOK_ENDPOINT")
     MONGO_DATABASE_HOST = "localhost"
     MONGO_DATABASE_PORT = 27017
     MONGO_DATABASE_NAME = os.getenv("MONGO_DATABASE_NAME", "martpe")
