@@ -70,3 +70,9 @@ git pull upstream feature/handle-version-1.2
 ```
 
 ### Starting the server
+
+Run the below command to start the server in `dev` environment
+
+```bash
+pm2 start pm2.config.js --env dev
+```

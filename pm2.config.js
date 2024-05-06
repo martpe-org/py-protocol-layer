@@ -5,13 +5,13 @@ module.exports = {
     instances: 1,
     max_memory_restart: '500M',
     interpreter: 'bash',
-    env_production: {
+    env_prod: {
        ENV: "prod"
     },
-    env_development: {
+    env_dev: {
        ENV: "dev"
     },
-    env_preprod: {
+    env_pre_prod: {
        ENV: "pre_prod"
     }
     // exec_mode : "cluster"
