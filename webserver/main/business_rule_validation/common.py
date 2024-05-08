@@ -35,7 +35,7 @@ def get_request_payload(callback_payload):
     query = {
         "request.context.action": request_action,
         "request.context.message_id": callback_payload["context"]["message_id"],
-        "response.message.ack.status": "ACK",
+        # "response.message.ack.status": "ACK",
     }
     request_dump_collection = get_mongo_collection("request_dump")
     request_payload = mongo.collection_find_one(request_dump_collection, query)["request"]
