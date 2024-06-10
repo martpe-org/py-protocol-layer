@@ -499,13 +499,18 @@ class Rateable(BaseModel):
     __root__: bool = Field(..., description='If the entity can be rated or not')
 
 
-class RatingAck(BaseModel):
-    feedback_ack: Optional[bool] = Field(
-        None, description='If feedback has been recorded or not'
-    )
-    rating_ack: Optional[bool] = Field(
-        None, description='If rating has been recorded or not'
-    )
+class RatingFeedbackFormElement(BaseModel):
+    url: str
+    data: str
+    mime_type: str
+
+
+class RatingFeedbackForm(BaseModel):
+    form: RatingFeedbackFormElement
+
+
+class OnRatingMessage(BaseModel):
+    feedback_form: Optional[RatingFeedbackForm] = None
 
 
 class Type4(Enum):
@@ -1627,7 +1632,7 @@ class IncrOnSearchProvider(BaseModel):
     payments: Optional[List[Payment]] = None
     locations: Optional[List[Location2]] = Field(None, description='Location List', min_items=1)
     offers: Optional[List[Offer]] = None
-    items: Optional[List[OnSearchItem]] = Field(None, description='Item List', max_items=1000, min_items=1)
+    items: Optional[List[OnSearchItem]] = Field(None, description='Item List', max_items=500, min_items=1)
     exp: Optional[datetime] = Field(
         None, description='Time after which catalog has to be refreshed'
     )
@@ -1636,7 +1641,7 @@ class IncrOnSearchProvider(BaseModel):
 
 
 class Rating(BaseModel):
-    rating_category: Optional[str] = Field(
+    rating_category: Optional[StrictStr] = Field(
         None, description='Category of the object being rated'
     )
     id: Optional[StrictStr] = Field(None, description='Id of the object being rated')
@@ -1644,8 +1649,10 @@ class Rating(BaseModel):
         None,
         description='Rating value given to the object (1 - Poor; 2 - Needs improvement; 3 - Satisfactory; 4 - Good; 5 - Excellent)',
     )
-    feedback_form: Optional[FeedbackForm] = None
-    feedback_id: Optional[FeedbackId] = None
+
+
+class RatingMessage(BaseModel):
+    ratings: List[Rating]
 
 
 class ResolutionSupport(BaseModel):
