@@ -51,8 +51,8 @@ def create_all_indexes():
                                                             "variant_group", "customisation_group"
                                                             ]]
     create_ttl_index("request_dump", ttl_in_seconds=3*24*60*60)
-    get_mongo_collection("on_search_items").create_index([('id', TEXT)], name='id_index')
-    get_mongo_collection("location").create_index([("gps", GEOSPHERE)])
+    # get_mongo_collection("on_search_items").create_index([('id', TEXT)], name='id_index')
+    # get_mongo_collection("location").create_index([("gps", GEOSPHERE)])
 
 
 def create_ttl_index(collection_name, ttl_in_seconds=None):
