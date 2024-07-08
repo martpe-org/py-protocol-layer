@@ -10,8 +10,9 @@ from main.repository.ack_response import get_ack_response
 from main.service import send_message_to_queue_for_given_request, send_message_to_elastic_search_queue
 from main.service.common import add_bpp_response, dump_request_payload, update_dumped_request_with_response
 from main.service.search import add_search_catalogues, dump_on_search_payload, add_incremental_search_catalogues
-from main.service.utils import validate_auth_header
+from main.service.utils import validate_auth_header, dump_validation_failure_request
 from main.utils.decorators import MeasureTime
+from main.utils.json_utils import clean_nones
 from main.utils.validation import validate_payload_schema_based_on_version
 
 ondc_network_namespace = Namespace('ondc_network', description='ONDC Network Namespace')
@@ -28,10 +29,10 @@ class GatewayOnSearch(Resource):
         request_type = request.headers.get("X-ONDC-Search-Response", "full")
         if request_type == SearchType.FULL.value:
             resp = validate_payload_schema_based_on_version(request_payload, 'full_on_search')
-            resp = validate_business_rules(request_payload, 'full_on_search') if resp is None else resp
+            # resp = validate_business_rules(request_payload, 'full_on_search') if resp is None else resp
         else:
             resp = validate_payload_schema_based_on_version(request_payload, 'incr_on_search')
-            resp = validate_business_rules(request_payload, 'incr_on_search') if resp is None else resp
+            # resp = validate_business_rules(request_payload, 'incr_on_search') if resp is None else resp
 
         if resp is None:
             if get_config_by_name('QUEUE_ENABLE') or get_config_by_name('ELASTIC_SEARCH_QUEUE_ENABLE'):
@@ -44,11 +45,13 @@ class GatewayOnSearch(Resource):
                 send_message_to_elastic_search_queue(message) if get_config_by_name('ELASTIC_SEARCH_QUEUE_ENABLE') else None
                 return get_ack_response(request_payload[constant.CONTEXT], ack=True)
             else:
+                request_payload = clean_nones(request_payload)
                 if request_type == SearchType.FULL.value:
                     return add_search_catalogues(request_payload)
                 elif request_type == SearchType.INC.value:
                     return add_incremental_search_catalogues(request_payload)
         else:
+            dump_validation_failure_request(request_payload, resp[0]["error"]["message"])
             return resp
 
 

@@ -59,9 +59,11 @@ class Config:
     RABBITMQ_HOST = os.getenv("RABBITMQ_HOST", "localhost")
     QUEUE_ENABLE = os.getenv("QUEUE_ENABLE", "False") == "True"
     ELASTIC_SEARCH_QUEUE_ENABLE = os.getenv("ELASTIC_SEARCH_QUEUE_ENABLE", "False") == "True"
+    DUMP_ALL_REQUESTS = os.getenv("DUMP_ALL_REQUESTS", "False") == "True"
     API_TOKEN = os.getenv("API_TOKEN", "testing_random_123")
     MAX_CONSUME_MESSAGE_TIME = int(os.getenv("MAX_CONSUME_MESSAGE_TIME", "30"))
     CONSUMER_MAX_WORKERS = int(os.getenv("CONSUMER_MAX_WORKERS", "100"))
+    PARALLEL_PROCESSES = int(os.getenv("PARALLEL_PROCESSES", "10"))
     MONGO_DATABASE_URL = os.getenv("MONGO_DATABASE_URL", "mongodb://localhost:27017")
     # MONGO_DATABASE_URL = "mongodb://mongo1:27017,mongo2:27018/?replicaSet=my-replica-set&readPreference=secondary"
     IS_TEST = os.getenv("IS_TEST", "False") == "True"
