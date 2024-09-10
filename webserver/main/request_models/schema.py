@@ -1177,6 +1177,12 @@ class Item(BaseModel):
     )
     tags: Optional[List[Tag]] = []
 
+    @validator('field__ondc_statutory_reqs_prepackaged_food', pre=True, always=True)
+    def check_for_object(cls, value):
+        if type(value) == str:
+            raise ValueError('@ondc/org/statutory_reqs_prepackaged_food cannot be a string')
+        return value
+
 
 class Location(BaseModel):
     id: Optional[StrictStr] = None
@@ -1684,7 +1690,7 @@ class IncrOnSearchProvider(BaseModel):
     categories: Optional[List[Category]] = None
     fulfillments: Optional[List[Fulfillment]] = None
     payments: Optional[List[Payment]] = None
-    locations: Optional[List[OnSearchLocation]] = Field(None, description='Location List', min_items=1)
+    locations: Optional[List[Location]] = Field(None, description='Location List', min_items=1)
     offers: Optional[List[Offer]] = None
     items: Optional[List[OnSearchItem]] = Field(None, description='Item List', min_items=1)
     exp: Optional[datetime] = Field(

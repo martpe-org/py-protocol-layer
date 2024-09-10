@@ -9,13 +9,13 @@ from main.repository.mongo import collection_find_one
 
 
 def validate_business_rules_for_full_on_search(payload):
-    fn_list = [validate_search_request_validity, validate_city_code_with_pin_code_in_locations]
+    fn_list = [validate_city_code_with_pin_code_in_locations]
     for fn in fn_list:
         error = fn(payload)
         if error:
             return get_ack_response(context=payload["context"], ack=False,
                                     error={"type": BaseError.JSON_SCHEMA_ERROR.value, "code": "20000",
-                                           "message": error}), 400
+                                           "message": error}), 200
     return None
 
 

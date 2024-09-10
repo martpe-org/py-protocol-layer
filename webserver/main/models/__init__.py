@@ -13,15 +13,6 @@ class JsonObject:
         return json.dumps(self, default=lambda o: o.__dict__)
 
 
-def initialize_before_calls(app):
-    from flask import request, g
-
-    @app.before_request
-    def set_page(page=1):
-        page = int(request.args.get('page', 1))
-        g.page = page
-
-
 def init_database():
     global mongo_client, mongo_db
     if mongo_client is not None and mongo_db is not None:
@@ -52,7 +43,7 @@ def create_all_indexes():
                                                             "auth_failure_request_dump", "sub_category",
                                                             "validation_failure_request_dump", "all_request_dump"
                                                             ]]
-    create_ttl_index("request_dump", ttl_in_seconds=3*24*60*60)
+    create_ttl_index("request_dump", ttl_in_seconds=7*24*60*60)
     # indexes = [
     #     IndexModel([("id", 1)]),
     #     IndexModel([("context.domain", 1)]),
